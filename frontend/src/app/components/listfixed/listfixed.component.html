@@ -2,10 +2,10 @@
     <br>
     <div class="siteHeader">
         <div>
-            <mat-icon aria-label="Error Outline icon" class="siteHeaderIcon">error_outline</mat-icon>
+            <mat-icon aria-label="Assignment Turned In icon" class="siteHeaderIcon">assignment_turned_in</mat-icon>
         </div>
         <div>
-            <h3> Open Errors</h3>
+            <h3> Fixed Errors</h3>
         </div>
     </div>
     <br>
@@ -20,18 +20,17 @@
         <br>
         <table mat-table [dataSource]="errorMessages">
 
-            <ng-container matColumnDef="fix">
-                <th mat-header-cell *matHeaderCellDef class="main-column-errormessage">Fix</th>
+            <ng-container matColumnDef="unfix">
+                <th mat-header-cell *matHeaderCellDef class="main-column-errormessage">Unfix</th>
                 <td mat-cell *matCellDef="let element" class="main-column-errormessage">
-                    <mat-checkbox [(ngModel)]="element.fixed" (change)="fixError(element._id)"
-                        style="height: 30px; width: 30px;"> Fix </mat-checkbox>  ->  
+                    <mat-checkbox [(ngModel)]="element.fixed" (change)="unfixError(element._id)"> </mat-checkbox>
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="date">
-                <th mat-header-cell *matHeaderCellDef class="main-column-errormessage">Date</th>
+            <ng-container matColumnDef="fixeddate">
+                <th mat-header-cell *matHeaderCellDef class="main-column-errormessage">Fixed (Date)</th>
                 <td mat-cell *matCellDef="let element" class="main-column-errormessage">
-                    {{element.date | date : "dd.MM.yyyy HH:mm"}}</td>
+                    {{element.fixedDate | date : "dd.MM.yyyy HH:mm"}}</td>
             </ng-container>
 
             <ng-container matColumnDef="application">
@@ -49,19 +48,15 @@
                 <td mat-cell *matCellDef="let element">{{element.description}}</td>
             </ng-container>
 
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>Status</th>
-                <td mat-cell *matCellDef="let element">{{element.status}} <button mat-raised-button
-                        (click)="changeErrorStatus(element._id, element.status)" class="editStatusButton" style="min-width: 42px; padding: 0 0px;">
-                        <mat-icon aria-label="Edit icon">edit</mat-icon>
-                    </button></td>
+            <ng-container matColumnDef="errordate">
+                <th mat-header-cell *matHeaderCellDef>Error creation (Date) </th>
+                <td mat-cell *matCellDef="let element"> {{element.errorDate | date : "dd.MM.yyyy HH:mm"}}</td>
             </ng-container>
 
-            <ng-container matColumnDef="edit-delete">
-                <th mat-header-cell *matHeaderCellDef class="mat-column-right">Edit - Delete</th>
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef class="mat-column-right">Delete</th>
                 <td mat-cell *matCellDef="let element" class="mat-column-right">
-                    <button mat-button color="primary" (click)="editErrorMessage(element._id)">Edit</button>
-                    <button mat-button color="warn" (click)="deleteErrorMessage(element._id)">Delete</button>
+                    <button mat-button color="warn" (click)="deleteFixedError(element._id)">Delete</button>
                 </td>
             </ng-container>
 

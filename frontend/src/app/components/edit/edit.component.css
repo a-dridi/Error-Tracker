@@ -14,3 +14,7 @@
 .container-errormessage-main {
     display: inherit;
 }
+
+.siteHeader {
+    margin-left: 5px;
+}

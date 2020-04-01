@@ -2,10 +2,13 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-let ErrorMessage = new Schema ({
-    date: {
+let FixedError = new Schema ({
+    fixedDate: {
         type: Date,
         default: Date.now
+    },
+    note: {
+        type: String
     },
     application: {
         type: String
@@ -17,14 +20,13 @@ let ErrorMessage = new Schema ({
     description: {
         type: String
     },
-    status: {
-        type: String,
-        default: "Open"
+    errorDate: {
+        type: Date
     },
     fixed: {
         type: Boolean,
-        default: false
+        default: true
     }
 })
 
-export default mongoose.model("ErrorMessage", ErrorMessage);
+export default mongoose.model("FixedError", FixedError);

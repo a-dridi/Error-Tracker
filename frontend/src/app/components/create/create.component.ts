@@ -20,9 +20,10 @@ export class CreateComponent implements OnInit {
       date: [''],
       application: [''],
       title: ['', Validators.required],
-      description: ['']
+      description: [''],
+      status: ['Open']
     });
-    this.value="12:40";
+    this.value = "12:40";
   }
 
   ngOnInit(): void {
@@ -31,13 +32,18 @@ export class CreateComponent implements OnInit {
   addErrorMessage(date, application, title, description) {
     //Reformat date into us format - for given French date locale
     let dateParsed = new Date(date.split("/").reverse().join("/"));
-    //Set selected time by timepicker
-    if (!isNaN(parseInt(this.selectedHour)) && !isNaN(parseInt(this.selectedHour))) {
-      dateParsed.setHours(parseInt(this.selectedHour));
-      dateParsed.setMinutes(parseInt(this.selectedMinute));
+    if (isNaN(dateParsed.getTime())) {
+      date = Date.now;
+    } else {
+      //Set selected time by timepicker
+      if (!isNaN(parseInt(this.selectedHour)) && !isNaN(parseInt(this.selectedHour))) {
+        dateParsed.setHours(parseInt(this.selectedHour));
+        dateParsed.setMinutes(parseInt(this.selectedMinute));
+      }
+      date = dateParsed.toString();
     }
-    date = dateParsed.toString();
-    this.errorMessageService.addErrorMessage(date, application, title, description).subscribe(() => {
+    let status = "Open";
+    this.errorMessageService.addErrorMessage(date, application, title, description, status).subscribe(() => {
       this.router.navigate(['/']);
     });
   }

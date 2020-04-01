@@ -15,7 +15,6 @@ Please adjust the file Server.js  in the folder "backend" to your server setting
 ## Run
 To start the application directly. You need to have NodeJS and MongoDB installed.
 
-
 **Start Database server (In Windows): **
 `bin/mongod.exe`
 
@@ -32,13 +31,13 @@ To start the application directly. You need to have NodeJS and MongoDB installed
 The id field of MongoDB is used to reference an error message. 
 
 - Get all error messages - GET request:
-`GET /errors`
+`GET /api/errors`
 
 - Get error message for a certain ID - GET request:
-`GET /errors/ID`
+`GET /api/errors/ID`
 
 - Add error message - POST request:
-`POST /errors/add`
+`POST /api/errors/add`
 ```
 {
     "title": "NullPointerException",
@@ -50,11 +49,11 @@ The id field of MongoDB is used to reference an error message.
 If you define no date, then the current date and time is added.
 
 - Delete error message of a certain ID - GET request:
-`GET /errors/delete/ID`
+`GET /api/errors/delete/ID`
 
 
 - Update error message of a certain id - POST request:
-`POST /errors/update/ID`
+`POST /api/errors/update/ID`
 ```
 {
     "title": "NullPointerException",

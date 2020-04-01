@@ -1,8 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ErrorMessageService } from '../../error-message.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormBuilder, Validators} from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar'; 
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ErrorStatuses } from 'src/app/errorstatuses.class';
 
 @Component({
   selector: 'app-edit',
@@ -17,8 +18,9 @@ export class EditComponent implements OnInit {
   errormessage: any = {};
   updateForm: FormGroup;
   selectedTime: string;
-
-  constructor(private errorMessageService: ErrorMessageService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private errorMessageForm: FormBuilder) { 
+  statusList: string[] = ErrorStatuses.statusArray;
+  selectedStatus: string;
+  constructor(private errorMessageService: ErrorMessageService, private router: Router, private route: ActivatedRoute, private snackBar: MatSnackBar, private errorMessageForm: FormBuilder) {
     this.buildForm();
   }
 
@@ -33,37 +35,53 @@ export class EditComponent implements OnInit {
         this.updateForm.get("application").setValue(this.errormessage.application);
         this.updateForm.get("title").setValue(this.errormessage.title);
         this.updateForm.get("description").setValue(this.errormessage.description);
+        this.selectedStatus = this.errormessage.status;
       })
     })
   }
 
-  buildForm(){
+  buildForm() {
     this.updateForm = this.errorMessageForm.group({
       date: [''],
       application: [''],
       title: ['', Validators.required],
-      description: ['']
+      description: [''],
+      status: ['']
     });
   }
 
-  updateErrorMessage(date, application, title, description){
+  updateErrorMessage(date, application, title, description) {
     //Reformat date into us format - for given French date locale
-    let dateParsed=new Date( date.split("/").reverse().join("/") );
-    //Set selected time by timepicker
-    if (!isNaN(parseInt(this.selectedHour)) && !isNaN(parseInt(this.selectedHour))) {
-    dateParsed.setHours(parseInt(this.selectedHour));
-    dateParsed.setMinutes(parseInt(this.selectedMinute));
+    let dateParsed = new Date(date.split("/").reverse().join("/"));
+    if (isNaN(dateParsed.getTime())) {
+      date = Date.now;
+    } else {
+      //Set selected time by timepicker
+      if (!isNaN(parseInt(this.selectedHour)) && !isNaN(parseInt(this.selectedHour))) {
+        dateParsed.setHours(parseInt(this.selectedHour));
+        dateParsed.setMinutes(parseInt(this.selectedMinute));
+      }
+      date = dateParsed.toString();
     }
-    date=dateParsed.toString();
 
-    this.errorMessageService.updateErrorMessage(this.id, date, application, title, description).subscribe(() => {
-      this.snackBar.open("Error was updated successfully!", "OK", {
-        duration: 4000
+
+    if (this.selectedStatus === "Fixed") {
+      this.errorMessageService.errorMessageFixed(this.id).subscribe(() => {
+        this.snackBar.open("OK. Error was fixed.", "OK", {
+          duration: 4000
+        });
       });
-      })
+    } else {
+      this.errorMessageService.updateErrorMessage(this.id, date, application, title, description, status).subscribe(() => {
+        this.snackBar.open("Error was updated successfully!", "OK", {
+          duration: 4000
+        });
+      });
+    }
+
   }
 
-  updateTime(time: String){
+  updateTime(time: String) {
     let timeSplitted = time.split(":");
     this.selectedHour = timeSplitted[0];
     this.selectedMinute = timeSplitted[1];

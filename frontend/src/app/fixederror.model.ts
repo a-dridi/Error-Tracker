@@ -1,9 +1,9 @@
-export interface ErrorMessage {
+export interface FixedError {
     id: String;
-    date: String;
+    fixedDate: String;
     application: String;
     title: String;
     description: String;
-    status: String;
+    errorDate: String;
     fixed: Boolean;
 }
