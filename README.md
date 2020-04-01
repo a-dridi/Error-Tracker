@@ -4,7 +4,7 @@ This is a MEAN stack web application that tracks errors of applications.
 An API is also available that can be used by applications to send error messages for example in Java through the class HttpUrlConnection.
 Errors are sorted by date descending. 
 
-![Screenshot of Web Application Error Tracker](https://raw.githubusercontent.com/a-dridi/Error-Tracker/master/img/screenshot1.PNG)
+![Screenshot of Web Application Error Tracker](https://raw.githubusercontent.com/a-dridi/Error-Tracker/master/screenshot1.PNG)
 
 The application needs Angular, Express JS, NodeJS and Mongo Database. All needed dependencies are saved in the package.json in the frontend and backend folders. 
 
