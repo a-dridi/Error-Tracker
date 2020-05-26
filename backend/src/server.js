@@ -95,14 +95,38 @@ router.route("/errors/updatestatus/:id").post((req, res) => {
         if (!errorentry) {
             res.status(400).send("Could not load error from database");
         } else {
-            errorentry.status = req.body.status;
-            errorentry.save()
-                .then(errorentry => {
-                    res.status(200).json("Error status was successfully updated.")
-                })
-                .catch(err => {
-                    res.status(400).send("Update failed. ");
-                });
+
+            if (req.body.status === "Fixed") {
+                let fixedError = new FixedError();
+                fixedError.errorDate = errorentry.date;
+                fixedError.application = errorentry.application;
+                fixedError.title = errorentry.title;
+                fixedError.description = errorentry.description;
+
+                fixedError.save()
+                    .then(savedFixedError => {
+                        ErrorMessage.findByIdAndRemove({ _id: req.params.id }, (err, errorentry) => {
+                            if (err) {
+                                res.json(err);
+                            } else {
+                                res.status(200).json("Error was successfully fixed.");
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        res.status(400).send("Update failed. ");
+                    });
+
+            } else {
+                errorentry.status = req.body.status;
+                errorentry.save()
+                    .then(errorentry => {
+                        res.status(200).json("Error status was successfully updated.");
+                    })
+                    .catch(err => {
+                        res.status(400).send("Update failed. " + err);
+                    });
+            }
 
         }
     });

@@ -12,8 +12,12 @@ The application needs Angular, Express JS, NodeJS and Mongo Database. All needed
 
 Please adjust the file Server.js  in the folder "backend" to your server settings. 
 
+Error Report Server: Do also copy the file credentials.txt_template to credentials.txt with the adjusted settings for the error report server.
+
 ## Run
 To start the application directly. You need to have NodeJS and MongoDB installed.
+
+"server.js" production file is in the root of this repository. As well as other production versions of backend files that are needed for NodeJS server. 
 
 **Start Database server (In Windows): **
 `bin/mongod.exe`

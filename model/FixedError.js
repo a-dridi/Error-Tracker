@@ -30,6 +30,10 @@ var FixedError = new Schema({
   },
   errorDate: {
     type: Date
+  },
+  fixed: {
+    type: Boolean,
+    "default": true
   }
 });
 

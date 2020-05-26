@@ -26,7 +26,12 @@ var ErrorMessage = new Schema({
     type: String
   },
   status: {
-    type: String
+    type: String,
+    "default": "Open"
+  },
+  fixed: {
+    type: Boolean,
+    "default": false
   }
 });
 

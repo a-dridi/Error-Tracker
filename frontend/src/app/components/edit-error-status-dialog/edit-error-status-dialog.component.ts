@@ -26,8 +26,8 @@ export class EditErrorStatusDialogComponent implements OnInit {
       this.snackBar.open("OK. Status updated", "OK", {
         duration: 4000
       });
+      this.editStatusDialogRef.close();
     });
-    this.editStatusDialogRef.close();
   }
 
 

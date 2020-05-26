@@ -12,7 +12,7 @@ export class ListfixedComponent implements OnInit {
 
   errorMessages: FixedError[];
   errorMessageColumns = ['unfix', 'fixeddate', 'application', 'title', 'description', 'errordate', 'delete'];
-  
+
   constructor(private errorMessageService: ErrorMessageService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
@@ -33,7 +33,7 @@ export class ListfixedComponent implements OnInit {
   }
   */
 
- deleteFixedError(id) {
+  deleteFixedError(id) {
     this.errorMessageService.deleteFixedError(id).subscribe(() => {
       this.loadErrorMessages();
       this.snackBar.open("Fixed Error was deleted successfully!", "OK", {
@@ -43,11 +43,17 @@ export class ListfixedComponent implements OnInit {
   }
 
   unfixError(id) {
-    this.errorMessageService.unfixErrorMessage(id).subscribe(() => {
-      this.snackBar.open("OK. Error was unfixed", "OK", {
-        duration: 4000
-      })
-    });
+    this.errorMessageService.unfixErrorMessage(id).subscribe(
+      result => {
+        this.snackBar.open("OK. Error was unfixed", "OK", {
+          duration: 4000
+        });
+      },
+      error => {
+        this.snackBar.open("ERROR. Error cannot be fixed on this site. Please go to: Open Errors", "OK", {
+          duration: 4000
+        });
+      });
   }
 
 

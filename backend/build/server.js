@@ -98,12 +98,33 @@ router.route("/errors/updatestatus/:id").post(function (req, res) {
     if (!errorentry) {
       res.status(400).send("Could not load error from database");
     } else {
-      errorentry.status = req.body.status;
-      errorentry.save().then(function (errorentry) {
-        res.status(200).json("Error status was successfully updated.");
-      })["catch"](function (err) {
-        res.status(400).send("Update failed. ");
-      });
+      if (req.body.status === "Fixed") {
+        var fixedError = new _FixedError["default"]();
+        fixedError.errorDate = errorentry.date;
+        fixedError.application = errorentry.application;
+        fixedError.title = errorentry.title;
+        fixedError.description = errorentry.description;
+        fixedError.save().then(function (savedFixedError) {
+          _ErrorMessage["default"].findByIdAndRemove({
+            _id: req.params.id
+          }, function (err, errorentry) {
+            if (err) {
+              res.json(err);
+            } else {
+              res.status(200).json("Error was successfully fixed.");
+            }
+          });
+        })["catch"](function (err) {
+          res.status(400).send("Update failed. ");
+        });
+      } else {
+        errorentry.status = req.body.status;
+        errorentry.save().then(function (errorentry) {
+          res.status(200).json("Error status was successfully updated.");
+        })["catch"](function (err) {
+          res.status(400).send("Update failed. " + err);
+        });
+      }
     }
   });
 }); //deleteErrorMessage - Delete an existing Error

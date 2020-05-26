@@ -77,7 +77,7 @@ router.route("/errors/add").post(function (req, res) {
 router.route("/errors/update/:id").post(function (req, res) {
   _ErrorMessage["default"].findById(req.params.id, function (err, errorentry) {
     if (!errorentry) {
-      return next(new Error("Could not load error from database"));
+      res.status(400).send("Could not load error from database");
     } else {
       errorentry.date = req.body.date;
       errorentry.application = req.body.application;
@@ -87,7 +87,7 @@ router.route("/errors/update/:id").post(function (req, res) {
       errorentry.save().then(function (errorentry) {
         res.json("Error was successfully updated.");
       })["catch"](function (err) {
-        res.status(400).update("Update failed. ");
+        res.status(400).send("Update failed. ");
       });
     }
   });
@@ -96,14 +96,35 @@ router.route("/errors/update/:id").post(function (req, res) {
 router.route("/errors/updatestatus/:id").post(function (req, res) {
   _ErrorMessage["default"].findById(req.params.id, function (err, errorentry) {
     if (!errorentry) {
-      return next(new Error("Could not load error from database"));
+      res.status(400).send("Could not load error from database");
     } else {
-      errorentry.status = req.body.status;
-      errorentry.save().then(function (errorentry) {
-        res.status(200).json("Error status was successfully updated.");
-      })["catch"](function (err) {
-        res.status(400).update("Update failed. ");
-      });
+      if (req.body.status === "Fixed") {
+        var fixedError = new _FixedError["default"]();
+        fixedError.errorDate = errorentry.date;
+        fixedError.application = errorentry.application;
+        fixedError.title = errorentry.title;
+        fixedError.description = errorentry.description;
+        fixedError.save().then(function (savedFixedError) {
+          _ErrorMessage["default"].findByIdAndRemove({
+            _id: req.params.id
+          }, function (err, errorentry) {
+            if (err) {
+              res.json(err);
+            } else {
+              res.status(200).json("Error was successfully fixed.");
+            }
+          });
+        })["catch"](function (err) {
+          res.status(400).send("Update failed. ");
+        });
+      } else {
+        errorentry.status = req.body.status;
+        errorentry.save().then(function (errorentry) {
+          res.status(200).json("Error status was successfully updated.");
+        })["catch"](function (err) {
+          res.status(400).send("Update failed. " + err);
+        });
+      }
     }
   });
 }); //deleteErrorMessage - Delete an existing Error
@@ -123,7 +144,7 @@ router.route("/errors/delete/:id").get(function (req, res) {
 router.route("/errors/fixed/:id").get(function (req, res) {
   _ErrorMessage["default"].findById(req.params.id, function (err, errorentry) {
     if (!errorentry) {
-      return next(new Error("Could not load error from database"));
+      res.status(400).send("Could not load error from database");
     } else {
       var fixedError = new _FixedError["default"]();
       fixedError.errorDate = errorentry.date;
@@ -141,16 +162,16 @@ router.route("/errors/fixed/:id").get(function (req, res) {
           }
         });
       })["catch"](function (err) {
-        res.status(400).update("Update failed. ");
+        res.status(400).send("Update failed. ");
       });
     }
   });
 }); //UnfixErrorMessage - Change status of error message to open and move it from the table fixederror to errormessage
 
-router.route("/errors/unfix/:id").get(function (req, res) {
+router.route("/fixederror/unfix/:id").get(function (req, res) {
   _FixedError["default"].findById(req.params.id, function (err, fixederrorEntry) {
     if (!fixederrorEntry) {
-      return next(new Error("Could not load error from database"));
+      res.status(400).send("Could not load error from database");
     } else {
       var errorMessage = new _ErrorMessage["default"]();
       errorMessage.date = fixederrorEntry.errorDate;
@@ -158,18 +179,23 @@ router.route("/errors/unfix/:id").get(function (req, res) {
       errorMessage.title = fixederrorEntry.title;
       errorMessage.description = fixederrorEntry.description;
       errorMessage.status = "Open";
+      console.log("OK 1");
       errorMessage.save().then(function (savedError) {
-        FixedEror.findByIdAndRemove({
+        console.log("OK 2");
+
+        _FixedError["default"].findByIdAndRemove({
           _id: req.params.id
         }, function (err, deleteEntry) {
           if (err) {
+            console.log("FAIL 1");
             res.json(err);
           } else {
+            console.log("OK 2");
             res.status(200).json("Error was successfully unfixed.");
           }
         });
       })["catch"](function (err) {
-        res.status(400).update("Update failed. ");
+        res.status(400).send("Update failed. " + err);
       });
     }
   });
@@ -193,6 +219,18 @@ router.route("/fixederror/:id").get(function (req, res) {
       console.log("DB error - getFixedErrorById: " + err);
     } else {
       res.json(errors);
+    }
+  });
+}); //deleteFixedError - Delete an existing Fixed Error
+
+router.route("/fixederror/delete/:id").get(function (req, res) {
+  _FixedError["default"].findByIdAndRemove({
+    _id: req.params.id
+  }, function (err, fixederrorentry) {
+    if (err) {
+      res.json(err);
+    } else {
+      res.status(200).json("Fixed Error was removed successfully. ");
     }
   });
 }); //addFixedError

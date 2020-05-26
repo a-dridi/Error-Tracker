@@ -47,11 +47,18 @@ export class ListComponent implements OnInit {
   }
 
   fixError(id) {
-    this.errorMessageService.errorMessageFixed(id).subscribe(() => {
-      this.snackBar.open("OK. Error was fixed", "OK", {
-        duration: 4000
-      })
-    });
+    this.errorMessageService.errorMessageFixed(id).subscribe(
+      result => {
+        this.snackBar.open("OK. Error was fixed", "OK", {
+          duration: 4000
+        });
+      },
+      error => {
+        this.snackBar.open("ERROR. Error cannot be unfixed on this site. Please go to: Fixed Errors", "OK", {
+          duration: 4000
+        });
+      }
+    );
   }
 
   /**
@@ -64,7 +71,7 @@ export class ListComponent implements OnInit {
       width: '300px',
       data: { id: id, status: status, statusList: ErrorStatuses.statusArray }
     });
-
+    
     editStatusDialogRef.afterClosed().subscribe(result => {
       this.loadErrorMessages();
     });
