@@ -26,10 +26,12 @@
                 <input matInput placeholder="Title" formControlName="title" #title>
             </mat-form-field>
             <mat-form-field class="field-full-width">
-                <input matInput placeholder="Description" formControlName="description" #description>
+                <textarea matInput cdkTexteareaAutoSize cdkAutosizeMinRows="10"
+                cdkAutoSizeMaxRows="25" placeholder="Description" formControlName="description"
+                #description></textarea>
             </mat-form-field>
             <mat-form-field class="field-full-width">
-            <mat-select [(ngModel)]="selectedStatus" placeholder="selectedStatus">
+            <mat-select [(ngModel)]="selectedStatus" placeholder="Status">
                 <mat-option *ngFor="let status of statusList" [value]="status">{{status}}</mat-option>
             </mat-select>
             </mat-form-field>

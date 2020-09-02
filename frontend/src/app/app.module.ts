@@ -30,6 +30,7 @@ import { ListfixedComponent } from './components/listfixed/listfixed.component';
 import { EditErrorStatusDialogComponent } from './components/edit-error-status-dialog/edit-error-status-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ErrorDescriptionDialogComponent } from './components/error-description-dialog/error-description-dialog.component';
 
 const appRoutes: Routes = [
   { path: "create", component: CreateComponent },
@@ -48,7 +49,8 @@ const appRoutes: Routes = [
     CreateComponent,
     EditComponent,
     ListfixedComponent,
-    EditErrorStatusDialogComponent
+    EditErrorStatusDialogComponent,
+    ErrorDescriptionDialogComponent
   ],
   imports: [
     MatToolbarModule,

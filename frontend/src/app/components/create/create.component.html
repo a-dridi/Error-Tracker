@@ -26,13 +26,18 @@
                 <input matInput placeholder="Title" formControlName="title" #title>
             </mat-form-field>
             <mat-form-field class="field-full-width">
-                <input matInput placeholder="Description" formControlName="description" #description>
+                <textarea matInput cdkTexteareaAutoSize cdkAutosizeMinRows="10"
+                    cdkAutoSizeMaxRows="25" placeholder="Description" formControlName="description"
+                    #description></textarea>
             </mat-form-field>
             <mat-divider>
             </mat-divider>
             <br>
             <br>
-            <button type="submit" (click)="addErrorMessage(date.value, application.value, title.value, description.value)" [disabled]="createForm.pristine || createForm.invalid" mat-raised-button color="primary" class="button-submit-errormessage">Save</button>
+            <button type="submit"
+                (click)="addErrorMessage(date.value, application.value, title.value, description.value)"
+                [disabled]="createForm.pristine || createForm.invalid" mat-raised-button color="primary"
+                class="button-submit-errormessage">Save</button>
             <button mat-raised-button color="accent" routerLink="/">Back</button>
         </form>
     </mat-card>

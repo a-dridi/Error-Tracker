@@ -24,7 +24,7 @@
                 <th mat-header-cell *matHeaderCellDef class="main-column-errormessage">Fix</th>
                 <td mat-cell *matCellDef="let element" class="main-column-errormessage">
                     <mat-checkbox [(ngModel)]="element.fixed" (change)="fixError(element._id)"
-                        style="height: 30px; width: 30px;"> Fix </mat-checkbox>  ->  
+                        style="height: 30px; width: 30px;"> </mat-checkbox> ->
                 </td>
             </ng-container>
 
@@ -46,13 +46,18 @@
 
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef>Description</th>
-                <td mat-cell *matCellDef="let element">{{element.description}}</td>
+                <td mat-cell *matCellDef="let element"><button mat-raised-button
+                        (click)="showDescription(element.date, element.title, element.description)" class="showDescriptionButton"
+                        style="min-width: 42px; padding: 0 0px;">
+                        <mat-icon aria-label="Receipt icon">receipt</mat-icon>
+                    </button></td>
             </ng-container>
 
             <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>Status</th>
                 <td mat-cell *matCellDef="let element">{{element.status}} <button mat-raised-button
-                        (click)="changeErrorStatus(element._id, element.status)" class="editStatusButton" style="min-width: 42px; padding: 0 0px;">
+                        (click)="changeErrorStatus(element._id, element.status)" class="editStatusButton"
+                        style="min-width: 42px; padding: 0 0px;">
                         <mat-icon aria-label="Edit icon">edit</mat-icon>
                     </button></td>
             </ng-container>

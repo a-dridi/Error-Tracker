@@ -1,0 +1,11 @@
+<h2>{{data.errorTitle}} - {{data.errorDate | date : "dd.MM.yyyy HH:mm"}}</h2>
+<div mat-dialog-content>
+    <mat-form-field class="description-display">
+        <textarea matInput rows="15" disabled [value]="data.errorDescription" style="color: black;"></textarea>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onClose()">
+        <mat-icon aria-label="Close icon" class="button-icons-dialog">close</mat-icon> Close
+    </button>
+</div>

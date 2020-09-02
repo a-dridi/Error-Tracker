@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorMessage } from '../../errormessage.model';
 import { EditErrorStatusDialogComponent } from '../edit-error-status-dialog/edit-error-status-dialog.component';
 import { ErrorStatuses } from 'src/app/errorstatuses.class';
+import { ErrorDescriptionDialogComponent } from '../error-description-dialog/error-description-dialog.component';
 
 @Component({
   selector: 'app-list',
@@ -18,7 +19,7 @@ export class ListComponent implements OnInit {
   errorFixed: boolean = false;
   errorMessageColumns = ['fix', 'date', 'application', 'title', 'description', 'status', 'edit-delete'];
 
-  constructor(private errorMessageService: ErrorMessageService, private snackBar: MatSnackBar, private router: Router, private editDialog: MatDialog) { }
+  constructor(private errorMessageService: ErrorMessageService, private snackBar: MatSnackBar, private router: Router, private editDialog: MatDialog, private descriptionDialog: MatDialog) { }
 
   ngOnInit(): void {
     this.loadErrorMessages();
@@ -71,11 +72,23 @@ export class ListComponent implements OnInit {
       width: '300px',
       data: { id: id, status: status, statusList: ErrorStatuses.statusArray }
     });
-    
+
     editStatusDialogRef.afterClosed().subscribe(result => {
       this.loadErrorMessages();
     });
+  }
 
+  /**
+   * Display a description of an error in a dialog
+   * @param date 
+   * @param title 
+   * @param description 
+   */
+  showDescription(date, title, description) {
+    const showDescriptionDialogRef = this.descriptionDialog.open(ErrorDescriptionDialogComponent, {
+      width: '800px',
+      data: { errorDate: date, errorTitle: title, errorDescription: description }
+    });
   }
 
 }
