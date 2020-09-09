@@ -31,6 +31,8 @@ import { EditErrorStatusDialogComponent } from './components/edit-error-status-d
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ErrorDescriptionDialogComponent } from './components/error-description-dialog/error-description-dialog.component';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const appRoutes: Routes = [
   { path: "create", component: CreateComponent },
@@ -39,8 +41,6 @@ const appRoutes: Routes = [
   { path: 'allfixederrors', component: ListfixedComponent },
   { path: '', redirectTo: 'list', pathMatch: 'full' }
 ];
-
-
 
 @NgModule({
   declarations: [
@@ -75,7 +75,9 @@ const appRoutes: Routes = [
     NgxMaterialTimepickerModule,
     FormsModule,
     MatDialogModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSortModule,
+    MatPaginatorModule
   ],
   providers: [ErrorMessageService, { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }],
   bootstrap: [AppComponent]

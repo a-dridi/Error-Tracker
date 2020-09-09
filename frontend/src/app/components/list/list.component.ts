@@ -7,6 +7,10 @@ import { ErrorMessage } from '../../errormessage.model';
 import { EditErrorStatusDialogComponent } from '../edit-error-status-dialog/edit-error-status-dialog.component';
 import { ErrorStatuses } from 'src/app/errorstatuses.class';
 import { ErrorDescriptionDialogComponent } from '../error-description-dialog/error-description-dialog.component';
+import { Sort } from '@angular/material/sort';
+import { CompileMetadataResolver } from '@angular/compiler';
+import { MatTableDataSource } from '@angular/material/table';
+
 
 @Component({
   selector: 'app-list',
@@ -16,8 +20,13 @@ import { ErrorDescriptionDialogComponent } from '../error-description-dialog/err
 export class ListComponent implements OnInit {
 
   errorMessages: ErrorMessage[];
+  sortedErrorMessages: ErrorMessage[];
+  errorMessagesDataSource;
+
+  errorMesagesSize: number = 0;
   errorFixed: boolean = false;
   errorMessageColumns = ['fix', 'date', 'application', 'title', 'description', 'status', 'edit-delete'];
+
 
   constructor(private errorMessageService: ErrorMessageService, private snackBar: MatSnackBar, private router: Router, private editDialog: MatDialog, private descriptionDialog: MatDialog) { }
 
@@ -30,7 +39,9 @@ export class ListComponent implements OnInit {
       .getErrorMessages()
       .subscribe((data: ErrorMessage[]) => {
         this.errorMessages = data;
-        console.log("Error (ErrorMessage) data loaded");
+        this.errorMesagesSize = this.errorMessages.length;
+        this.sortedErrorMessages= data;
+        this.errorMessagesDataSource = new MatTableDataSource(this.sortedErrorMessages);
       })
   }
 
@@ -90,5 +101,64 @@ export class ListComponent implements OnInit {
       data: { errorDate: date, errorTitle: title, errorDescription: description }
     });
   }
+
+  sortErrorMessages(sort: Sort) {
+    if (!sort.active || sort.direction === '') {
+      this.sortedErrorMessages = this.errorMessages;
+      return;
+    }
+
+    this.sortedErrorMessages = this.errorMessages.sort((a, b) => {
+      const isAscending = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'fix': return this.compareErrorMessageField(a.fixed ? 1 : 0, b.fixed ? 1 : 0, isAscending);
+        case 'date': return this.compareErrorMessageField(this.getTimestampFromString(a.date), this.getTimestampFromString(b.date), isAscending);
+        case 'application': return this.compareErrorMessageField(a.application, b.application, isAscending);
+        case 'title': return this.compareErrorMessageField(a.title, b.title, isAscending);
+        default: return 0;
+      }
+    });
+  }
+
+  compareErrorMessageField(a: number | string, b: number | string, isAscending: boolean) {
+    return (a < b ? -1 : 1) * (isAscending ? 1 : -1);
+  }
+
+  runErrorMessageFilter(filterValue: string){
+    this.errorMessagesDataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+
+  /**
+ * Returns timestamp from strings containing date time in the format "dd.MM.yyyy hh:mm". 
+ * @param datetimeString String in this format for example: 02.09.2018 21:08 
+ * @return timestamp if date format is correct. If not, then 0
+ */
+  getTimestampFromString(datetimeString: string): number {
+    const parsedDateStringArray = datetimeString.split(".");
+    if (parsedDateStringArray.length !== 3) {
+      return 0;
+    }
+
+    const dayDate = parseInt(parsedDateStringArray[0]);
+    const monthDate = parseInt(parsedDateStringArray[1]);
+    const yearTimeDateStringArray = parsedDateStringArray[2].split(" ");
+    if (yearTimeDateStringArray.length !== 2) {
+      return 0; //Date does not contain time after date. 
+    }
+    const yearDate = parseInt(yearTimeDateStringArray[0]);
+
+    const timeDateStringArray = yearTimeDateStringArray[1].split(":");
+    if (timeDateStringArray.length !== 2) {
+      return 0;
+    }
+    const hourDate = parseInt(timeDateStringArray[0]);
+    const minuteDate = parseInt(timeDateStringArray[1]);
+    if (isNaN(dayDate) || isNaN(monthDate) || isNaN(yearDate) || isNaN(hourDate) || isNaN(minuteDate)) {
+      return 0;
+    }
+    return new Date(yearDate, monthDate, dayDate, hourDate, minuteDate, 0, 0).getTime();
+  }
+
 
 }
