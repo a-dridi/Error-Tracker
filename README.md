@@ -19,7 +19,7 @@ To start the application directly. You need to have NodeJS and MongoDB installed
 
 "server.js" production file is in the root of this repository. As well as other production versions of backend files that are needed for NodeJS server. 
 
-**Start Database server (In Windows): **
+**Start Database server (In Windows):**
 `bin/mongod.exe`
 
 **Start backend server:**
